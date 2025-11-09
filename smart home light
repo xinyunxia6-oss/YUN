@@ -1,1 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>智慧燈光控制</title>
+<style>
+  body { font-family: Arial; text-align: center; margin-top: 100px; }
+  button {
+    font-size: 20px; padding: 15px 30px; margin: 20px;
+    border: none; border-radius: 8px; cursor: pointer;
+  }
+  .on { background-color: #ffcc00; }
+  .off { background-color: #333; color: white; }
+</style>
+</head>
 
+<body>
+  <h1>🏠 智慧燈光控制系統</h1>
+  <button class="on" onclick="control('on')">開燈 💡</button>
+  <button class="off" onclick="control('off')">關燈 🌙</button>
+
+  <script>
+    function control(cmd) {
+      // 改成你的 Arduino IP
+      fetch(`http://192.168.1.50/led/${cmd}`)
+        .then(() => alert(`已送出 ${cmd} 指令`))
+        .catch(() => alert('無法連線到 Arduino'));
+    }
+  </script>
+</body>
+</html>
