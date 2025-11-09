@@ -20,7 +20,7 @@
 
   <script>
     function control(cmd) {
-      fetch(`http://192.168.1.50/led/${cmd}`)  // ← 這裡改成你的Arduino IP
+      fetch(`http://192.168.1.50/led/${cmd}`)  // 
         .then(() => alert(`已送出 ${cmd} 指令`))
         .catch(() => alert('無法連線到 Arduino'));
     }
