@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>ESP32 遠端開關</title>
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1 id="status-text">ESP32 狀態：離線/未發送</h1>
+        <label class="switch">
+            <input type="checkbox" id="toggle-trigger">
+            <span class="slider"></span>
+        </label>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
