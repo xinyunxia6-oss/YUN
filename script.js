@@ -1,25 +1,43 @@
-// 連接免費公共 MQTT 伺服器 (使用 WebSocket 加密通訊)
-const client = mqtt.connect('wss://broker.emqx.io:8084/mqtt');
+// --- 1. MQTT 連線設定 ---
+// 使用公開的 EMQX Broker，這是網頁常用的加密 WebSocket 協定
+const broker = 'wss://broker.emqx.io:8084/mqtt'; 
+// 主題必須與 ESP32 程式碼中的 client.subscribe("YUN/status") 完全一致
+const topic = 'YUN/status'; 
+const client = mqtt.connect(broker);
 
-const checkbox = document.getElementById('toggle-trigger');
+// --- 2. 取得 HTML 元件 ---
 const statusText = document.getElementById('status-text');
-const topic = "xinyun_iot/led_1"; // <--- 這裡請改成你自定義的主題名稱
+const toggle = document.getElementById('toggle-trigger');
 
+// --- 3. MQTT 事件監聽 ---
+// 當成功連接到 MQTT 伺服器時
 client.on('connect', () => {
-    statusText.innerText = "已連線至雲端伺服器";
-});
-
-checkbox.addEventListener('change', function() {
-    let msg = this.checked ? "ON" : "OFF";
-    
-    // 發送訊號
-    client.publish(topic, msg);
-    
-    if (this.checked) {
-        statusText.innerText = "指令：開啟 (ON)";
-        document.body.style.backgroundColor = "#d4edda";
-    } else {
-        statusText.innerText = "指令：關閉 (OFF)";
-        document.body.style.backgroundColor = "#f8d7da";
+    console.log('已連接至 MQTT Broker');
+    if (statusText) {
+        statusText.innerText = 'ESP32 狀態：已連線 (MQTT)';
     }
 });
+
+// 當連線發生錯誤時
+client.on('error', (err) => {
+    console.error('MQTT 連線錯誤: ', err);
+    if (statusText) {
+        statusText.innerText = '狀態：連線失敗';
+    }
+});
+
+// --- 4. 監聽開關動作 ---
+// 當你點擊網頁上的 Slider 開關時
+if (toggle) {
+    toggle.addEventListener('change', function() {
+        if (this.checked) {
+            // 發送字串 '1' 給 ESP32 開燈
+            client.publish(topic, '1');
+            console.log('發送指令：1 (開啟)');
+        } else {
+            // 發送字串 '0' 給 ESP32 關燈
+            client.publish(topic, '0');
+            console.log('發送指令：0 (關閉)');
+        }
+    });
+}
