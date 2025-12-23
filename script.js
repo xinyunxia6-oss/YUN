@@ -1,33 +1,45 @@
 // --- 1. MQTT 連線設定 ---
-// 使用公開的 EMQX Broker，這是網頁常用的加密 WebSocket 協定
-const broker = 'wss://broker.emqx.io:8084/mqtt'; 
-// 主題必須與 ESP32 程式碼中的 client.subscribe("YUN/status") 完全一致
-const topic = 'YUN/status'; 
+const broker = 'wss://broker.emqx.io:8084/mqtt';
+const topic = 'YUN/status'; // 與 ESP32 溝通的主題
 const client = mqtt.connect(broker);
 
 // --- 2. 取得 HTML 元件 ---
 const statusText = document.getElementById('status-text');
 const toggle = document.getElementById('toggle-trigger');
+const statusDot = document.getElementById('status-dot');
 
 // --- 3. MQTT 事件監聽 ---
-// 當成功連接到 MQTT 伺服器時
+
+// 當成功連接至 MQTT 伺服器時
 client.on('connect', () => {
     console.log('已連接至 MQTT Broker');
-    if (statusText) {
-        statusText.innerText = 'ESP32 狀態：已連線 (MQTT)';
+    if (statusText) statusText.innerText = 'ESP32 狀態：已連線 (MQTT)';
+    if (statusDot) statusDot.style.backgroundColor = '#10b981'; // 變綠色
+    
+    // 訂閱主題，這樣如果別的手機開燈，這個網頁也會跟著動
+    client.subscribe(topic);
+});
+
+// 當收到訊息時 (讓網頁開關與實體燈同步)
+client.on('message', (t, message) => {
+    if (t === topic) {
+        const msg = message.toString();
+        if (msg === '1') {
+            toggle.checked = true;
+        } else if (msg === '0') {
+            toggle.checked = false;
+        }
     }
 });
 
 // 當連線發生錯誤時
 client.on('error', (err) => {
     console.error('MQTT 連線錯誤: ', err);
-    if (statusText) {
-        statusText.innerText = '狀態：連線失敗';
-    }
+    if (statusText) statusText.innerText = '狀態：連線失敗';
+    if (statusDot) statusDot.style.backgroundColor = '#ef4444'; // 變紅色
 });
 
 // --- 4. 監聽開關動作 ---
-// 當你點擊網頁上的 Slider 開關時
 if (toggle) {
     toggle.addEventListener('change', function() {
         if (this.checked) {
