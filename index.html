@@ -8,12 +8,21 @@
 </head>
 <body>
     <div class="container">
-        <h1 id="status-text">ESP32 狀態：離線/未發送</h1>
+        
+        <h2>ESP32 遠端開關</h2>
+
         <label class="switch">
-            <input type="checkbox" id="toggle-trigger">
+            <input type="checkbox" id="mqtt-toggle" onchange="onToggleChange()">
             <span class="slider"></span>
         </label>
+
+        <div class="mqtt-status">
+            <span class="dot"></span>
+            <span id="status-label">ESP32 狀態：已連線 (MQTT)</span>
+        </div>
+
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
