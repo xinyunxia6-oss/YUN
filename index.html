@@ -2,27 +2,28 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>ESP32 遠端開關</title>
-    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP32 控制中心</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 </head>
 <body>
+
     <div class="container">
-        
         <h2>ESP32 遠端開關</h2>
 
         <label class="switch">
-            <input type="checkbox" id="mqtt-toggle" onchange="onToggleChange()">
+            <input type="checkbox" id="toggle-trigger">
             <span class="slider"></span>
         </label>
 
         <div class="mqtt-status">
-            <span class="dot"></span>
-            <span id="status-label">ESP32 狀態：已連線 (MQTT)</span>
+            <span class="dot" id="status-dot"></span>
+            <span id="status-text">連線中...</span>
         </div>
-
     </div>
 
     <script src="script.js"></script>
+    
 </body>
 </html>
